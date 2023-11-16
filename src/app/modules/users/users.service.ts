@@ -11,6 +11,24 @@ const createUser = async (user: IUser): Promise<IUser | null> => {
     return result;
 }
 
+//get single user
+const getSingleUser = async (id: string): Promise<IUser | null> => {
+    const result = await User.findById(id)
+    return result
+  }
+
+// Delete user
+const deleteUser = async (id: string): Promise<IUser | null> => {
+    const isExist = await User.findById(id)
+    if (!isExist) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'User not found!')
+    }
+    const result = await User.findByIdAndDelete(id)
+    return result
+  }
+
 export const UserService = {
-    createUser
+    createUser,
+    getSingleUser,
+    deleteUser
 }
