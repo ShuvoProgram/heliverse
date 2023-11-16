@@ -17,6 +17,22 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
     return result
   }
 
+  const updateUser = async (id: string, payload: Partial<IUser>): Promise<IUser | null> => {
+    // const isExist = await User.findOne({id});
+
+    // if (!isExist) {
+    //     throw new ApiError(httpStatus.NOT_FOUND, 'User not found !');
+    //   }
+    const result = await User.findOneAndUpdate(
+        {_id: id},
+        payload,
+        {
+            new: true
+        }
+    );
+    return result;
+  }
+
 // Delete user
 const deleteUser = async (id: string): Promise<IUser | null> => {
     const isExist = await User.findById(id)
@@ -30,5 +46,6 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
 export const UserService = {
     createUser,
     getSingleUser,
+    updateUser,
     deleteUser
 }
