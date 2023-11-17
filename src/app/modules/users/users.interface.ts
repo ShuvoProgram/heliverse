@@ -12,6 +12,17 @@ export type IUser = {
     available: boolean;
 }
 
+export type IUserFilters = {
+    query?: string;
+    domain?: string;
+    gender?: string;
+    available?: string;
+}
+
+export type IManagementDepartment = {
+    name: string;
+  };
+
 // The IUserModel interface combines the Model interface with custom methods
 export type IUserModel = Model<IUser> & {
     // Method to check if a user exists by email
