@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import httpStatus from 'http-status'
 import globalErrorHandling from './app/middleware/globalErrorHandling'
-// import router from './app/routes'
+import router from './app/routes'
 
 const app: Application = express()
 
@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 //development routes
-// app.use('/api/v1', router)
+app.use('/api', router)
 
 // Testing route
 app.get('/api/v1', async (req: Request, res: Response) => {
