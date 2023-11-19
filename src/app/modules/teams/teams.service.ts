@@ -24,11 +24,11 @@ const createTeam = async (data: ITeam): Promise<ITeam> => {
 
     const existingTeamMember = await User.findById({ _id: new mongoose.Types.ObjectId(existingTeamDomains?.teamMember[0]?._id) })
 
-    if (existingTeamMember) {
-      if (existingTeamMember.domain === userData.domain) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Team Member with Same Domain Already Exists!');
-      }
-    }
+    // if (existingTeamMember) {
+    //   if (existingTeamMember.domain === userData.domain) {
+    //     throw new ApiError(httpStatus.BAD_REQUEST, 'Team Member with Same Domain Already Exists!');
+    //   }
+    // }
 
     const insertTeam = await Team.create(data);
     await session.commitTransaction();
@@ -46,7 +46,13 @@ const getAllTeam = async (): Promise<ITeam[] | null> => {
   return result
 }
 
+const getSingleTeam = async (id: string): Promise<ITeam | null> => {
+const result = await Team.findById(id).populate("teamMember");
+return result;
+}
+
 export const teamService = {
   createTeam,
-  getAllTeam
+  getAllTeam,
+  getSingleTeam
 };

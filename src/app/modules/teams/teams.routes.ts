@@ -8,5 +8,6 @@ router.get(
     '/',
     teamController.getAllTeam
   )
+router.get('/:id', teamController.getSingleTeam)
 
 export const TeamRoutes = router;
