@@ -23,55 +23,31 @@ const getAllUser = async (
   const { query, domain, gender, available, ...filtersData } = filterCriteria;
   const { page, limit, skip, sortBy, sortOrder } = paginationHelpers.calculatePagination(paginationOptions);
 
-   // Check if any of the domain, gender, or available criteria is present
-   const hasFilterCriteria = domain || gender || available;
-
-
-  const andConditions = []
+   const filterConditions = [];
+   
   if (query) {
-    andConditions.push({
-      $or: userSearchableFields.map(field => ({
-        [field]: {
-          $regex: query,
-          $options: 'i',
-        },
-      })),
-    })
+    const queryConditions = userSearchableFields.map((field) => ({ [field]: { $regex: query, $options: 'i' } }));
+    filterConditions.push({ $or: queryConditions });
   }
-  if (hasFilterCriteria || Object.keys(filtersData).length) {
-    // Only add filter conditions if any of domain, gender, or available is present
-    const filterConditions = [];
-    if (domain) {
-      filterConditions.push({ domain });
-    }
-    if (gender) {
-      filterConditions.push({ gender });
-    }
-    if (available !== undefined) {
-      filterConditions.push({ available });
-    }
-
-    andConditions.push({
-      $or: filterConditions,
-    });
-  }
-
-  if (Object.keys(filtersData).length) {
-    andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
-    })
+  // Check if any of the domain, gender, or available criteria is present
+  if (domain || gender || available !== undefined) {
+    if (domain) filterConditions.push({ domain });
+    if (gender) filterConditions.push({ gender });
+    if (available !== undefined) filterConditions.push({ available });
   }
  
-
-  const sortConditions: { [key: string]: SortOrder } = {}
-  if (sortBy && sortOrder) {
-    sortConditions[sortBy] = sortOrder
+  if (Object.keys(filtersData).length) {
+    const additionalFilters = Object.entries(filtersData).map(([field, value]) => ({ [field]: value }));
+    filterConditions.push({ $and: additionalFilters });
   }
 
-  const whereConditions =
-  andConditions.length > 0 ? { $and: andConditions } : {}
+  const whereConditions = filterConditions.length > 0 ? { $and: filterConditions } : {};
+
+  const sortConditions: { [key: string]: SortOrder } = {};
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+ 
 
   const result = await User.find(whereConditions)
   .sort(sortConditions)

@@ -17,6 +17,18 @@ const createTeam = catchAsync(async (req: Request, res: Response) => {
     })
   })
 
+  const getAllTeam = catchAsync(async (req: Request, res: Response) => {
+    const result = await teamService.getAllTeam()
+  
+    sendResponse<ITeam[]>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Team retrieved successfully !',
+      data: result,
+    })
+  })
+
 export const teamController = {
-    createTeam
+    createTeam,
+    getAllTeam
 }

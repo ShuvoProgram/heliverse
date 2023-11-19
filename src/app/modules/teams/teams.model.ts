@@ -4,11 +4,15 @@ import { ITeam, TeamModel } from "./teams.interface";
 // team Schema
 export const UserTeam = new Schema<ITeam, TeamModel>(
   {
-    teamMember: {
+    teamName: {
+      type: String,
+      required: true,
+    },
+    teamMember: [{
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
+    }],
   },
   {
     timestamps: true,
